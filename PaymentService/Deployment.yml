@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentService
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: paymentService
+  template:
+    metadata:
+      labels:
+        app: paymentService
+    spec:
+      containers:
+        - name: paymentService
+          image: paymentService:latest
+          ports:
+            - containerPort: 8081
