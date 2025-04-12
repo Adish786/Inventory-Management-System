@@ -9,6 +9,11 @@ spring:
         auto-registration: true
         instance:
           name: ${spring.application.name:JSS}
+  cache:
+    type: caffeine
+    cache-names: products
+    caffeine:
+      spec: maximumSize=100,expireAfterWrite=10m
 
 logging:
   level:

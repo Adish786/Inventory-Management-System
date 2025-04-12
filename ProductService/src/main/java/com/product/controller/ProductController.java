@@ -21,13 +21,11 @@ public class ProductController {
 
     private final ProductService service;
 
-    private final RestTemplate restTemplate;
 
     private final ProductRepository productRepository;
 
-    public ProductController(ProductService service, RestTemplate restTemplate, ProductRepository productRepository) {
+    public ProductController(ProductService service, ProductRepository productRepository) {
         this.service = service;
-        this.restTemplate = restTemplate;
         this.productRepository = productRepository;
     }
 

@@ -5,6 +5,7 @@ import com.notification.model.NotificationRequest;
 import com.notification.repository.NotificationRepository;
 import com.notification.utils.NotificationStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class NotificationServiceImpl implements NotificationService {
         this.pushService = pushService;
         this.repository = repository;
     }
-
+@Cacheable("notification")
     public void sendNotification(NotificationRequest request) {
         Notification notification = new Notification();
         notification.setUserId(request.getUserId());

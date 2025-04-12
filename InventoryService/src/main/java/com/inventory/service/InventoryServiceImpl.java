@@ -6,6 +6,8 @@ import com.inventory.model.StockQuantity;
 import com.inventory.repository.InventoryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Transactional
+    @Cacheable("product")
     public int getStock(UUID productId) {
         String cacheKey = "stock_" + productId;
         Integer cachedStock = redisTemplate.opsForValue().get(cacheKey);
@@ -44,6 +47,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public void updateStock(UUID productId, StockQuantity quantity) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
                 .orElseThrow(() -> new NotFoundException("Product not found"));
@@ -64,6 +68,7 @@ public class InventoryServiceImpl implements InventoryService {
   */
 
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public void updateStock(UUID productId, int quantity, boolean increase) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found in inventory"));
@@ -78,11 +83,11 @@ public class InventoryServiceImpl implements InventoryService {
         // Publish event for real-time updates
         eventPublisher.publishEvent(new StockUpdatedEvent(productId, inventory.getStockQuantity().getQuantity()));
     }
-
+    @Cacheable("quantity")
     public void increaseStock(UUID productId, int quantity) {
        updateStock(productId, quantity, true);
     }
-
+    @Cacheable("quantity")
     public void decreaseStock(UUID productId, int quantity) {
        updateStock(productId, quantity, false);
     }

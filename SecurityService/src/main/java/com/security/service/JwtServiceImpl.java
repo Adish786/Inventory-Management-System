@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
+    private static final String SECRET = "f4aXK9sS9GHh/ZbKvUO7ugfNiUdV+NQ5VKfZKtk+nqM=";
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -36,6 +38,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Cacheable
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -49,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Key getSignKey() {
-        byte[] key = Decoders.BASE64.decode("iamimran");
+        byte[] key = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(key);
     }
 

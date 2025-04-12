@@ -1,6 +1,7 @@
 package com.inventory.service;
 
 import com.inventory.repository.InventoryRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class StockReportServiceImpl implements StockReportService {
     public StockReportServiceImpl(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
-
+    @Cacheable("products")
     public int getStockForProduct(UUID productId) {
         return inventoryRepository.findByProductId(productId)
                 .map(inventory -> inventory.getStockQuantity().getQuantity())

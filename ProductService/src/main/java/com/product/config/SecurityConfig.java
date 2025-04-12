@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/inventory/**").authenticated()
                         .anyRequest().permitAll()
                 )
-               // .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                // .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .build();
     }
 }
