@@ -7,6 +7,7 @@ import com.security.dto.SignupRequest;
 import com.security.entity.User;
 import com.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,9 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
-public class AuthenticationServiceImp implements AuthenticationService{
+@Slf4j
+public class AuthenticationServiceImp implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -31,7 +35,7 @@ public class AuthenticationServiceImp implements AuthenticationService{
         this.jwtService = jwtService;
     }
 
-    public User signupUser(SignupRequest signupRequest){
+    public User signupUser(SignupRequest signupRequest) {
         User user = new User();
         user.setFirstname(signupRequest.getFirstName());
         user.setLastName(signupRequest.getLastName());
@@ -40,23 +44,31 @@ public class AuthenticationServiceImp implements AuthenticationService{
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse signInRequest(SignInRequest signInRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPass()));
-        User user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid emil or password"));
-        String token = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+    public JwtAuthenticationResponse signInRequest(SignInRequest signInRequest) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPass()));
+        User user = userRepository.findByEmail(signInRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(() -> jwtService.generateToken(user));
+        CompletableFuture<String> refreshTokenFuture = CompletableFuture.supplyAsync(() ->
+                jwtService.generateRefreshToken(new HashMap<>(), user));
+        String token = tokenFuture.join();
+        String refreshToken = refreshTokenFuture.join();
         return new JwtAuthenticationResponse(token, refreshToken);
     }
-
-    public JwtAuthenticationResponse refreshTokenRequest(RefreshTokenRequest refreshTokenRequest){
+    public JwtAuthenticationResponse refreshTokenRequest(RefreshTokenRequest refreshTokenRequest) {
         String userEmail = jwtService.extractUserName(refreshTokenRequest.getRefreshToken());
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-        if(jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)){
-            String token = jwtService.generateToken(user);
-            String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-            return new JwtAuthenticationResponse(token, refreshToken);
+        CompletableFuture<Optional<User>> userFuture = CompletableFuture.supplyAsync(() ->
+                userRepository.findByEmail(userEmail));
+        User user = userFuture.join().orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)) {
+            CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(() -> jwtService.generateToken(user));
+            CompletableFuture<String> refreshTokenFuture = CompletableFuture.supplyAsync(() ->
+                    jwtService.generateRefreshToken(new HashMap<>(), user));
+
+            return new JwtAuthenticationResponse(tokenFuture.join(), refreshTokenFuture.join());
         }
+
         return null;
     }
-
 }

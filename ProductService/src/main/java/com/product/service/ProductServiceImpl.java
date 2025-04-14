@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.product.model.Category;
 import com.product.model.Price;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,82 +19,109 @@ import com.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
-    private final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+    private final ProductRepository repository;
+
+    // Per-product lock map for thread-safe updates
+    private final ConcurrentMap<UUID, ReentrantLock> productLocks = new ConcurrentHashMap<>();
+
     @Autowired
-    private ProductRepository repository;
-
-    @Cacheable
-    public Product saveProduct(Product product) {
-        return repository.save(product);
+    public ProductServiceImpl(ProductRepository repository) {
+        this.repository = repository;
     }
 
-    @Cacheable
-    public List<Product> saveProducts(List<Product> products) {
-        return repository.saveAll(products);
+    private ReentrantLock getLock(UUID productId) {
+        return productLocks.computeIfAbsent(productId, id -> new ReentrantLock());
     }
 
-    @Cacheable
+    @Override
+    @Cacheable("products")
     public List<Product> getProducts() {
         return repository.findAll();
     }
 
-    @Cacheable
+    @Override
+    @Cacheable("products")
     public Optional<Product> getProductById(UUID id) {
         return repository.findById(id);
     }
 
-    @Cacheable
+    @Override
+    @Cacheable("products")
     public Optional<Product> getProductByName(String name) {
         return Optional.ofNullable(repository.findByName(name));
     }
 
-    @Cacheable
-    public String deleteProduct(UUID id) {
-        repository.deleteById(id);
-        log.info("product removed");
-        return "product removed !! " + id;
-    }
-
-    @Cacheable
-    public Product createProduct(String name, String description, BigDecimal price, UUID categoryId) {
-        Product product = new Product(name, description, new Price(price), new Category(categoryId));
-        log.info("product created");
+    @Override
+    public Product saveProduct(Product product) {
         return repository.save(product);
     }
 
-    @Cacheable
+    @Override
+    public List<Product> saveProducts(List<Product> products) {
+        return repository.saveAll(products);
+    }
+
+    @Override
+    public String deleteProduct(UUID id) {
+        ReentrantLock lock = getLock(id);
+        lock.lock();
+        try {
+            repository.deleteById(id);
+            return "Product removed !! " + id;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public Product createProduct(String name, String description, BigDecimal price, UUID categoryId) {
+        Product product = new Product(name, description, new Price(price), new Category(categoryId));
+        return repository.save(product);
+    }
+
+    @Override
     public List<Product> getAllProducts() {
         return repository.findAll();
     }
 
     @Override
-    @Cacheable("products")
     public void updateProductPrice(UUID id, BigDecimal newPrice) {
-        Product product = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
-        product.updatePrice(newPrice);
-        repository.save(product);
+        ReentrantLock lock = getLock(id);
+        lock.lock();
+        try {
+            Product product = repository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+            product.updatePrice(newPrice);
+            repository.save(product);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-
     @Transactional
-    @Cacheable("products")
     public Product updateProductByName(Product updatedProduct) {
-        Optional<Product> existingProductOpt = Optional.ofNullable(repository.findByName(updatedProduct.getName()));
-        if (existingProductOpt.isEmpty()) {
-            throw new IllegalArgumentException("Product with name " + updatedProduct.getName() + " not found.");
+        String name = updatedProduct.getName();
+        Product existingProduct = repository.findByName(name);
+        if (existingProduct == null) {
+            throw new IllegalArgumentException("Product with name " + name + " not found.");
         }
-        Product existingProduct = existingProductOpt.get();
-        if (updatedProduct.getPrice() != null) {
-            existingProduct.setPrice(updatedProduct.getPrice());
+        UUID productId = existingProduct.getId();
+        ReentrantLock lock = getLock(productId);
+        lock.lock();
+        try {
+            if (updatedProduct.getPrice() != null) {
+                existingProduct.setPrice(updatedProduct.getPrice());
+            }
+            if (updatedProduct.getCategory() != null) {
+                existingProduct.setCategory(updatedProduct.getCategory());
+            }
+            return repository.save(existingProduct);
+        } finally {
+            lock.unlock();
         }
-
-        if (updatedProduct.getCategory() != null) {
-            existingProduct.setCategory(updatedProduct.getCategory());
-        }
-        log.info("product saved");
-        return repository.save(existingProduct);
     }
 }

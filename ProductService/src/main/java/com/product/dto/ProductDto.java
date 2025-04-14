@@ -1,5 +1,8 @@
 package com.product.dto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProductDto {
     private int id;
     private String name;

@@ -20,6 +20,8 @@ public class NotificationRequest {
     private String subject;
     private String text;
     private String message;
+    private String recipient;
+    private String phoneNumber;
 
     public Long getUserId() {
         return userId;
@@ -67,5 +69,21 @@ public class NotificationRequest {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

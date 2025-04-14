@@ -6,6 +6,7 @@ import com.service.model.Payment;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.service.service.PaymentServiceImpl;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 public class PaymentController {
 
 	private final PaymentServiceImpl service;

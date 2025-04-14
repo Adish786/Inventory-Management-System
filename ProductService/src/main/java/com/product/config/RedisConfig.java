@@ -1,5 +1,6 @@
 package com.product.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
     @Bean
     public RedisTemplate<String, Integer> redisTemplate(RedisConnectionFactory factory) {

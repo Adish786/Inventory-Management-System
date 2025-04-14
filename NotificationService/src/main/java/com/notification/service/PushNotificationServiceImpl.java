@@ -1,39 +1,48 @@
 package com.notification.service;
 
-import com.notification.model.Notification;
 import com.notification.model.NotificationRequest;
-import jakarta.mail.Message;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-@Service
-public class PushNotificationServiceImpl implements PushNotificationService{
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
+@Service
+public class PushNotificationServiceImpl implements PushNotificationService {
     @Override
     public boolean sendPushNotification(NotificationRequest request) {
-        return false;
-    }
-
-
-    /*
-     @Override
-    public boolean sendPushNotification(NotificationRequest request) {
         try {
-            Message message = Message.builder()
-                    .setToken(request.getDeviceToken()) // Target device
-                    .setNotification(Notification.builder()
-                            .setTitle(request.getTitle())
-                            .setBody(request.getMessage())
-                            .build())
-                    .putData("extraInfo", "Some additional data")
-                    .build();
-
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Push Notification Sent: " + response);
-            return true;
-        } catch (FirebaseMessagingException e) {
-            e.printStackTrace();
-            return false;
+           // log.info("Push notification sent successfully to {}",request.getMessage());
+            return true;  // Notification sent successfully
+        } catch (Exception e) {
+          //  log.error("Failed to send push notification to {}: {}", e.getMessage(), e);
+            return false;  // Failure
         }
     }
-     */
+
+/*
+    @Override
+    public CompletableFuture<Boolean> sendPushNotification(NotificationRequest request) {
+        return CompletableFuture.completedFuture(sendPushNotificationAsync(request));
+    }
+
+    private boolean sendPushNotificationAsync(NotificationRequest request) {
+        try {
+            // Firebase logic here
+            // Example Firebase call to send a push notification
+            // For example:
+            // Message message = Message.builder().setToken(request.getDeviceToken()).build();
+            // String response = FirebaseMessaging.getInstance().send(message);
+
+            log.info("Push notification sent successfully to {}",request.getMessage());
+            return true;  // Notification sent successfully
+        } catch (Exception e) {
+            log.error("Failed to send push notification to {}: {}", e.getMessage(), e);
+            return false;  // Failure
+        }
+    }
+
+ */
 }

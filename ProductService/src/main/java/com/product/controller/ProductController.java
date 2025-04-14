@@ -9,16 +9,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import com.product.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import com.product.model.Product;
 import com.product.repository.ProductRepository;
 
 @RestController
 public class ProductController {
-
+    private Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService service;
 
 
@@ -44,6 +45,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public List<Product> addProducts(@RequestBody List<Product> products) {
+       log.info("product service data are save");
         return service.saveProducts(products);
     }
 
@@ -53,6 +55,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public List<Product> findAllProducts() {
+        log.info("find product service data");
         return service.getProducts();
     }
 
@@ -62,6 +65,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public Optional<Product> findProductById(@PathVariable UUID id) {
+        log.info("find product service data based on UUID" +id);
         return service.getProductById(id);
     }
 
@@ -78,6 +82,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public ResponseEntity<Product> updateProductByName(@RequestBody Product product) {
+        log.info("product service update by name");
         Product updatedProduct = service.updateProductByName(product);
         return ResponseEntity.ok(updatedProduct);
     }
@@ -88,6 +93,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public String deleteProduct(@PathVariable UUID id) {
+        log.info("product service deleted by UUID" +id);
         return service.deleteProduct(id);
     }
 
@@ -98,6 +104,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public Product updateProductByName(@PathVariable(name = "name") String name, Product product) {
+        log.info("product service find by the name");
         return service.updateProductByName(product);
     }
 
@@ -158,6 +165,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Internal Server Error") })
     public ResponseEntity<Void> updateProductPrice(@PathVariable UUID id, @RequestParam BigDecimal newPrice) {
+        log.info("update the product price");
         service.updateProductPrice(id, newPrice);
         return ResponseEntity.noContent().build();
     }

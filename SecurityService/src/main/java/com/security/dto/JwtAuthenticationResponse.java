@@ -2,8 +2,10 @@ package com.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
+@Slf4j
 public class JwtAuthenticationResponse {
     private String token;
     private String refreshToken;

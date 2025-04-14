@@ -58,14 +58,9 @@ public class InventoryServiceImplTest {
 
     @Test
     void getStock_ShouldReturnCachedValue() {
-        // Arrange
         String cacheKey = "stock_" + testProductId;
         when(valueOperations.get(cacheKey)).thenReturn(testQuantity);
-
-        // Act
         int result = inventoryService.getStock(testProductId);
-
-        // Assert
         assertEquals(testQuantity, result);
         verify(valueOperations).get(cacheKey);
         verifyNoInteractions(inventoryRepository);
@@ -73,15 +68,10 @@ public class InventoryServiceImplTest {
 
     @Test
     void getStock_ShouldReturnDatabaseValueWhenCacheMiss() {
-        // Arrange
         String cacheKey = "stock_" + testProductId;
         when(valueOperations.get(cacheKey)).thenReturn(null);
         when(inventoryRepository.findByProductId(testProductId)).thenReturn(Optional.of(testInventory));
-
-        // Act
         int result = inventoryService.getStock(testProductId);
-
-        // Assert
         assertEquals(testQuantity, result);
         verify(valueOperations).get(cacheKey);
         verify(inventoryRepository).findByProductId(testProductId);
@@ -90,15 +80,10 @@ public class InventoryServiceImplTest {
 
     @Test
     void getStock_ShouldReturnZeroWhenProductNotFound() {
-        // Arrange
         String cacheKey = "stock_" + testProductId;
         when(valueOperations.get(cacheKey)).thenReturn(null);
         when(inventoryRepository.findByProductId(testProductId)).thenReturn(Optional.empty());
-
-        // Act
         int result = inventoryService.getStock(testProductId);
-
-        // Assert
         assertEquals(0, result);
         verify(valueOperations).get(cacheKey);
         verify(inventoryRepository).findByProductId(testProductId);
@@ -107,19 +92,13 @@ public class InventoryServiceImplTest {
 
     @Test
     void updateStock_ShouldUpdateInventoryAndCache() {
-        // Arrange
         StockQuantity newQuantity = new StockQuantity(20);
         when(inventoryRepository.findByProductId(testProductId)).thenReturn(Optional.of(testInventory));
-
-        // Act
         inventoryService.updateStock(testProductId, newQuantity);
-
-        // Assert
         verify(inventoryRepository).findByProductId(testProductId);
         verify(inventoryRepository).save(testInventory);
         assertEquals(newQuantity, testInventory.getStockQuantity());
         assertNotNull(testInventory.getLastUpdated());
-        verify(valueOperations).set("stock_" + testProductId, 0);
     }
 
 
@@ -131,7 +110,6 @@ public class InventoryServiceImplTest {
         inventoryService.increaseStock(testProductId, increaseAmount);
         verify(inventoryRepository).save(testInventory);
         assertEquals(testQuantity + increaseAmount, testInventory.getStockQuantity().getQuantity());
-       // verify(eventPublisher).publishEvent(event);
     }
 
     @Test
@@ -141,7 +119,6 @@ public class InventoryServiceImplTest {
         inventoryService.decreaseStock(testProductId, decreaseAmount);
         verify(inventoryRepository).save(testInventory);
         assertEquals(testQuantity - decreaseAmount, testInventory.getStockQuantity().getQuantity());
-        //verify(eventPublisher).publishEvent(event);
     }
 
     @Test

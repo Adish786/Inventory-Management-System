@@ -132,7 +132,7 @@ public class PaymentServiceImplTest {
 
         when(paymentRepo.findById(999)).thenReturn(null);
 
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             paymentService.updatePayment(nonExistentPayment);
         });
     }

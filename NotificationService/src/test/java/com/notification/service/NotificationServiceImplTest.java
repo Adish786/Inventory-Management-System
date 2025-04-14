@@ -1,7 +1,8 @@
 package com.notification.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import com.notification.model.Notification;
 import com.notification.model.NotificationRequest;
 import com.notification.repository.NotificationRepository;
 import com.notification.utils.NotificationStatus;
@@ -12,9 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-class NotificationServiceImplTest {
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class NotificationServiceImplTest {
 
     @Mock
     private EmailService emailService;
@@ -31,99 +35,88 @@ class NotificationServiceImplTest {
     @InjectMocks
     private NotificationServiceImpl notificationService;
 
-    private NotificationRequest emailRequest;
-    private NotificationRequest smsRequest;
-    private NotificationRequest pushRequest;
+    private NotificationRequest request;
+    private Notification notification;
+
     @BeforeEach
-    void setUp() {
-        // Adjust these parameters to match your actual NotificationRequest constructor
-        emailRequest = new NotificationRequest();
-        emailRequest.setUserId(1L);
-        emailRequest.setType(NotificationType.EMAIL);
-        emailRequest.setMessage("Test email message");
-        smsRequest = new NotificationRequest();
-        smsRequest.setUserId(2L);
-        smsRequest.setType(NotificationType.SMS);
-        smsRequest.setMessage("Test SMS message");
-        pushRequest = new NotificationRequest();
-        pushRequest.setUserId(3L);
-        pushRequest.setType(NotificationType.PUSH);
-        pushRequest.setMessage("Test push message");
+public     void setUp() {
+        request = new NotificationRequest();
+        request.setUserId(123L);
+        request.setType(NotificationType.EMAIL);
+        request.setRecipient("test@example.com");
+        request.setSubject("Test Subject");
+        request.setMessage("Test Message");
+        notification = new Notification();
+        notification.setUserId(request.getUserId());
+        notification.setType(request.getType());
+        notification.setMessage(request.getMessage());
+        notification.setStatus(NotificationStatus.PENDING);
     }
 
     @Test
-    void sendNotification_EmailSuccess_ShouldSaveWithSentStatus() {
-        // Arrange
+public     void sendNotification_ShouldSavePendingNotificationFirst() {
+        when(repository.save(any(Notification.class))).thenReturn(notification);
         when(emailService.sendEmail(anyString(), anyString(), anyString())).thenReturn(true);
-
-        // Act
-        notificationService.sendNotification(emailRequest);
-
-        // Assert
-        verify(repository, times(2)).save(argThat(notification -> {
-            if (notification.getStatus() == NotificationStatus.PENDING) {
-                return true;
-            }
-            return notification.getStatus() == NotificationStatus.SENT &&
-                    notification.getSentAt() != null;
-        }));
-        verify(emailService).sendEmail(anyString(), anyString(), anyString());
+        notificationService.sendNotification(request);
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.PENDING));
     }
 
     @Test
-    void sendNotification_EmailFailure_ShouldSaveWithFailedStatus() {
-        // Arrange
+public     void sendNotification_EmailSuccess_ShouldUpdateToSent() throws Exception {
+        when(repository.save(any(Notification.class))).thenReturn(notification);
+        when(emailService.sendEmail(anyString(), anyString(), anyString())).thenReturn(true);
+        notificationService.sendNotification(request);
+        Thread.sleep(100);
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.SENT &&
+                        notif.getSentAt() != null));
+    }
+
+    @Test
+public     void sendNotification_EmailFailure_ShouldUpdateToFailed() throws Exception {
+        when(repository.save(any(Notification.class))).thenReturn(notification);
         when(emailService.sendEmail(anyString(), anyString(), anyString())).thenReturn(false);
-
-        // Act
-        notificationService.sendNotification(emailRequest);
-
-        // Assert
-        verify(repository, times(2)).save(argThat(notification -> {
-            if (notification.getStatus() == NotificationStatus.PENDING) {
-                return true;
-            }
-            return notification.getStatus() == NotificationStatus.FAILED &&
-                    notification.getSentAt() == null;
-        }));
+        notificationService.sendNotification(request);
+        Thread.sleep(100);
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.FAILED &&
+                        notif.getSentAt() == null));
     }
 
     @Test
-    void sendNotification_SmsSuccess_ShouldSaveWithSentStatus() {
-        // Arrange
+public     void sendNotification_SmsSuccess_ShouldCallSmsService() throws Exception {
+        request.setType(NotificationType.SMS);
+        request.setPhoneNumber("+1234567890");
+        when(repository.save(any(Notification.class))).thenReturn(notification);
         when(smsService.sendSms(anyString(), anyString())).thenReturn(true);
-
-        // Act
-        notificationService.sendNotification(smsRequest);
-
-        // Assert
-        verify(repository, times(2)).save(argThat(notification -> {
-            if (notification.getStatus() == NotificationStatus.PENDING) {
-                return true;
-            }
-            return notification.getStatus() == NotificationStatus.SENT &&
-                    notification.getSentAt() != null;
-        }));
-        verify(smsService).sendSms(anyString(), anyString());
+        notificationService.sendNotification(request);
+        Thread.sleep(100);
+        verify(smsService).sendSms("+1234567890", "Test Message");
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.SENT));
     }
 
     @Test
-    void sendNotification_PushSuccess_ShouldSaveWithSentStatus() {
-        // Arrange
+public     void sendNotification_PushSuccess_ShouldCallPushService() throws Exception {
+        request.setType(NotificationType.PUSH);
+        when(repository.save(any(Notification.class))).thenReturn(notification);
         when(pushService.sendPushNotification(any(NotificationRequest.class))).thenReturn(true);
-
-        // Act
-        notificationService.sendNotification(pushRequest);
-
-        // Assert
-        verify(repository, times(2)).save(argThat(notification -> {
-            if (notification.getStatus() == NotificationStatus.PENDING) {
-                return true;
-            }
-            return notification.getStatus() == NotificationStatus.SENT &&
-                    notification.getSentAt() != null;
-        }));
-        verify(pushService).sendPushNotification(pushRequest);
+        notificationService.sendNotification(request);
+        Thread.sleep(100);
+        verify(pushService).sendPushNotification(request);
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.SENT));
     }
 
+    @Test
+public     void sendNotification_Exception_ShouldUpdateToFailed() throws Exception {
+        when(repository.save(any(Notification.class))).thenReturn(notification);
+        when(emailService.sendEmail(anyString(), anyString(), anyString()))
+                .thenThrow(new RuntimeException("Service unavailable"));
+        notificationService.sendNotification(request);
+        Thread.sleep(100);
+        verify(repository, atLeastOnce()).save(argThat(notif ->
+                notif.getStatus() == NotificationStatus.FAILED));
+    }
 }

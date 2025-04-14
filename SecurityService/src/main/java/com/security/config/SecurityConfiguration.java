@@ -3,6 +3,7 @@ package com.security.config;
 import com.security.entity.Role;
 import com.security.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

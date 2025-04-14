@@ -1,5 +1,8 @@
 package com.service.message;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FileInfo {
 	
 	private String filename;

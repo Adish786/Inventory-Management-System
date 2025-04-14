@@ -41,14 +41,9 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_ShouldReturnUserDetails_WhenUserExists() {
-        // Arrange
         when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(testUser));
-
-        // Act
         UserDetailsService detailsService = userService.getUserDetails();
         UserDetails userDetails = detailsService.loadUserByUsername(testEmail);
-
-        // Assert
         assertNotNull(userDetails);
         assertEquals(testEmail, userDetails.getUsername());
         verify(userRepository).findByEmail(testEmail);
@@ -56,10 +51,7 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_ShouldThrowException_WhenUserNotFound() {
-        // Arrange
         when(userRepository.findByEmail(notFoundEmail)).thenReturn(Optional.empty());
-
-        // Act & Assert
         UserDetailsService detailsService = userService.getUserDetails();
         assertThrows(UsernameNotFoundException.class, () -> {
             detailsService.loadUserByUsername(notFoundEmail);
@@ -69,15 +61,12 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_ShouldThrowExceptionWithCorrectMessage_WhenUserNotFound() {
-        // Arrange
         when(userRepository.findByEmail(notFoundEmail)).thenReturn(Optional.empty());
-
-        // Act & Assert
         UserDetailsService detailsService = userService.getUserDetails();
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
             detailsService.loadUserByUsername(notFoundEmail);
         });
 
-        assertEquals("Use not found", exception.getMessage());
+        assertEquals("Failed to load user: notfound@example.com", exception.getMessage());
     }
 }

@@ -32,20 +32,16 @@ public class SalesReportServiceImplTest {
     @BeforeEach
     void setUp() {
         testProductId = UUID.randomUUID();
-        testSale1 = new Sales(testProductId, 5, 250.0); // 5 items, $250 total
-        testSale2 = new Sales(testProductId, 3, 180.0); // 3 items, $180 total
+        testSale1 = new Sales(testProductId, 5, 250.0);
+        testSale2 = new Sales(testProductId, 3, 180.0);
     }
 
     @Test
     void generateSalesReport_ShouldReturnEmptyReportForNoSales() {
-        // Arrange
         when(salesRepository.findByProductId(testProductId))
                 .thenReturn(Collections.emptyList());
 
-        // Act
         SalesReport report = salesReportService.generateSalesReport(testProductId);
-
-        // Assert
         assertEquals(testProductId, report.getProductId());
         assertEquals(0, report.getTotalSold());
         assertEquals(0.0, report.getTotalRevenue(), 0.001);
@@ -54,14 +50,9 @@ public class SalesReportServiceImplTest {
 
     @Test
     void generateSalesReport_ShouldAggregateSingleSaleCorrectly() {
-        // Arrange
         when(salesRepository.findByProductId(testProductId))
                 .thenReturn(Collections.singletonList(testSale1));
-
-        // Act
         SalesReport report = salesReportService.generateSalesReport(testProductId);
-
-        // Assert
         assertEquals(testProductId, report.getProductId());
         assertEquals(5, report.getTotalSold());
         assertEquals(1250.0, report.getTotalRevenue(), 0.001);
@@ -69,42 +60,31 @@ public class SalesReportServiceImplTest {
 
     @Test
     void generateSalesReport_ShouldAggregateMultipleSalesCorrectly() {
-        // Arrange
         List<Sales> salesList = Arrays.asList(testSale1, testSale2);
         when(salesRepository.findByProductId(testProductId))
                 .thenReturn(salesList);
 
-        // Act
         SalesReport report = salesReportService.generateSalesReport(testProductId);
-
-        // Assert
         assertEquals(testProductId, report.getProductId());
-        assertEquals(8, report.getTotalSold()); // 5 + 3
-        assertEquals(1790.0, report.getTotalRevenue(), 0.001); // 250 + 180
+        assertEquals(8, report.getTotalSold());
+        assertEquals(1790.0, report.getTotalRevenue(), 0.001);
     }
 
     @Test
     void generateSalesReport_ShouldHandleZeroQuantitySales() {
-        // Arrange
         Sales zeroSale = new Sales(testProductId, 0, 0.0);
         when(salesRepository.findByProductId(testProductId))
                 .thenReturn(Collections.singletonList(zeroSale));
-
-        // Act
         SalesReport report = salesReportService.generateSalesReport(testProductId);
-
-        // Assert
         assertEquals(0, report.getTotalSold());
         assertEquals(0.0, report.getTotalRevenue(), 0.001);
     }
 
     @Test
     void generateSalesReport_ShouldHandleRepositoryException() {
-        // Arrange
         when(salesRepository.findByProductId(testProductId))
                 .thenThrow(new RuntimeException("Database error"));
 
-        // Act & Assert
         assertThrows(RuntimeException.class, () ->
                 salesReportService.generateSalesReport(testProductId));
     }

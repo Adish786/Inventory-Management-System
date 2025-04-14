@@ -7,11 +7,13 @@ import com.security.dto.SignupRequest;
 import com.security.entity.User;
 import com.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

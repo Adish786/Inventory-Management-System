@@ -1,8 +1,11 @@
 package com.service.message;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.FileInfo;
 
+@Slf4j
 public class Response {
 	private List<Message> messages = null;
 	private List<FileInfo> fileInfos = null;

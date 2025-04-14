@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableAdminServer
+@Slf4j
 public class SpringBootAdminApplication {
 
 	public static void main(String[] args) {
