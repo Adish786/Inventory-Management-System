@@ -1,6 +1,7 @@
 package com.service.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -26,7 +27,7 @@ public class Payment implements Serializable {
 	@Column(name = "paymentserviceprovider")
 	private String paymentserviceprovider;
 	@Column(name = "totalpayout")
-	private int totalpayout;
+	private BigDecimal totalpayout;
 	@Column(name = "quantity")
 	private int quantity;
 
@@ -46,11 +47,11 @@ public class Payment implements Serializable {
 		this.paymentserviceprovider = paymentserviceprovider;
 	}
 
-	public int getTotalpayout() {
+	public BigDecimal getTotalpayout() {
 		return totalpayout;
 	}
 
-	public void setTotalpayout(int totalpayout) {
+	public void setTotalpayout(BigDecimal totalpayout) {
 		this.totalpayout = totalpayout;
 	}
 

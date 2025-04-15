@@ -44,5 +44,17 @@ management:
     loggers:
       enabled: true
 
+  #promites config
   server:
     port: ${server.port:8003}
+    web:
+      exposure:
+        include: health,info,prometheus
+        prometheus:
+          enabled: true
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+      health:
+        show-details: always

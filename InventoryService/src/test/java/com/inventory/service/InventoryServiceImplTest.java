@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.kafka.core.KafkaTemplate;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +39,8 @@ public class InventoryServiceImplTest {
     private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private InventoryServiceImpl inventoryService;
-
+    @Mock
+    private KafkaTemplate kafkaTemplate;
     @Mock
     private UUID testProductId;
     @Mock

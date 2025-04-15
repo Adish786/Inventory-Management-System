@@ -10,6 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
+
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,16 +29,18 @@ public class PaymentServiceImplTest {
 
     @InjectMocks
     private PaymentServiceImpl paymentService;
+    @Mock
+    ApplicationEventPublisher applicationEventPublisher;
 
     private Payment testPayment;
     private List<Payment> testPayments;
 
     @BeforeEach
     void setUp() {
-        testPayment = new Payment(1, "PayPal", 2, 100);
+        testPayment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
         testPayments = Arrays.asList(
-                new Payment(1, "PayPal", 2, 100),
-                new Payment(2, "Stripe", 3, 150)
+                new Payment(1, "PayPal", BigDecimal.valueOf(2), 100),
+                new Payment(2, "Stripe", BigDecimal.valueOf(3), 150)
         );
     }
 
@@ -112,7 +117,7 @@ public class PaymentServiceImplTest {
 
     @Test
     void updatePayment_ShouldUpdateExistingPayment() {
-        Payment updatedPayment = new Payment(1, "Stripe", 3, 150);
+        Payment updatedPayment = new Payment(1, "Stripe", BigDecimal.valueOf(3), 150);
 
         when(paymentRepo.findById(1)).thenReturn(testPayment);
         when(paymentRepo.save(any(Payment.class))).thenReturn(updatedPayment);
@@ -128,7 +133,7 @@ public class PaymentServiceImplTest {
 
     @Test
     void updatePayment_ShouldThrowException_WhenPaymentNotFound() {
-        Payment nonExistentPayment = new Payment(999, "Unknown", 0, 0);
+        Payment nonExistentPayment = new Payment(999, "Unknown", BigDecimal.valueOf(0), 0);
 
         when(paymentRepo.findById(999)).thenReturn(null);
 

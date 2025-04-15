@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import com.service.controller.PaymentController;
@@ -44,7 +45,7 @@ public class PaymentControllerTest {
 
     @Test
     void addPayment_ShouldReturnCreatedPayment() throws Exception {
-        Payment payment = new Payment(1, "PayPal", 2, 100);
+        Payment payment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
         when(paymentService.savePayment(any(Payment.class))).thenReturn(payment);
 
         mockMvc.perform(post("/addPayment")
@@ -58,8 +59,8 @@ public class PaymentControllerTest {
     @Test
     void addPayments_ShouldReturnListOfPayments() throws Exception {
         List<Payment> payments = Arrays.asList(
-                new Payment(1, "PayPal", 2, 100),
-                new Payment(2, "Stripe", 3, 150)
+                new Payment(1, "PayPal", BigDecimal.valueOf(2), 100),
+                new Payment(2, "Stripe", BigDecimal.valueOf(3), 150)
         );
         when(paymentService.savePayments(anyList())).thenReturn(payments);
 
@@ -73,8 +74,8 @@ public class PaymentControllerTest {
     @Test
     void findAllPayments_ShouldReturnAllPayments() throws Exception {
         List<Payment> payments = Arrays.asList(
-                new Payment(1, "PayPal", 2, 100),
-                new Payment(2, "Stripe", 3, 150)
+                new Payment(1, "PayPal", BigDecimal.valueOf(2), 100),
+                new Payment(2, "Stripe", BigDecimal.valueOf(3), 150)
         );
         when(paymentService.getPayments()).thenReturn(payments);
 
@@ -85,7 +86,7 @@ public class PaymentControllerTest {
 
     @Test
     void findPaymentById_ShouldReturnPayment() throws Exception {
-        Payment payment = new Payment(1, "PayPal", 2, 100);
+        Payment payment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
         when(paymentService.getPaymentById(1)).thenReturn(payment);
 
         mockMvc.perform(get("/paymentById/{id}", 1))
@@ -96,7 +97,7 @@ public class PaymentControllerTest {
 
     @Test
     void findProductByPaymentServiceProvider_ShouldReturnPayment() throws Exception {
-        Payment payment = new Payment(1, "PayPal", 2, 100);
+        Payment payment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
         when(paymentService.getPaymentServiceProvider("PayPal")).thenReturn(payment);
 
         mockMvc.perform(get("/payment/{name}", "PayPal"))
@@ -106,7 +107,7 @@ public class PaymentControllerTest {
 
     @Test
     void updatePayment_ShouldReturnUpdatedPayment() throws Exception {
-        Payment payment = new Payment(1, "PayPal", 2, 100);
+        Payment payment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
         when(paymentService.updatePayment(any(Payment.class))).thenReturn(payment);
 
         mockMvc.perform(put("/update")
@@ -127,8 +128,8 @@ public class PaymentControllerTest {
 
     @Test
     void updatePaymentById_ShouldReturnUpdatedPayment() throws Exception {
-        Payment existingPayment = new Payment(1, "PayPal", 2, 100);
-        Payment updatedPayment = new Payment(1, "Stripe", 3, 150);
+        Payment existingPayment = new Payment(1, "PayPal", BigDecimal.valueOf(2), 100);
+        Payment updatedPayment = new Payment(1, "Stripe", BigDecimal.valueOf(3), 150);
         when(paymentRepo.findById(1)).thenReturn(existingPayment);
         when(paymentRepo.save(any(Payment.class))).thenReturn(updatedPayment);
 
@@ -141,7 +142,7 @@ public class PaymentControllerTest {
 
     @Test
     void updatePaymentById_ShouldReturnNotFound_WhenPaymentDoesNotExist() throws Exception {
-        Payment updatedPayment = new Payment(1, "Stripe", 3, 150);
+        Payment updatedPayment = new Payment(1, "Stripe", BigDecimal.valueOf(3), 150);
 
         when(paymentRepo.findById(1)).thenReturn(updatedPayment);
 

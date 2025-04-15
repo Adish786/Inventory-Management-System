@@ -2,47 +2,48 @@ package com.notification.service;
 
 import com.notification.model.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
 @Service
 public class PushNotificationServiceImpl implements PushNotificationService {
-    @Override
-    public boolean sendPushNotification(NotificationRequest request) {
-        try {
-           // log.info("Push notification sent successfully to {}",request.getMessage());
-            return true;  // Notification sent successfully
-        } catch (Exception e) {
-          //  log.error("Failed to send push notification to {}: {}", e.getMessage(), e);
-            return false;  // Failure
-        }
+    private Logger log = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
+    private final KafkaProducerService kafkaProducerService;
+
+    public PushNotificationServiceImpl(KafkaProducerService kafkaProducerService) {
+        this.kafkaProducerService = kafkaProducerService;
     }
 
-/*
     @Override
+    @Cacheable(value = "push_notifications", key = "#request.userId + '_' + #request.message.hashCode()")
+    @Async
     public CompletableFuture<Boolean> sendPushNotification(NotificationRequest request) {
-        return CompletableFuture.completedFuture(sendPushNotificationAsync(request));
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                log.info("Sending push notification to user: {}, message: {}", request.getUserId(), request.getMessage());
+                boolean sent = true;
+                if (sent) {
+                    log.info("Push notification sent successfully to user: {}", request.getUserId());
+                    kafkaProducerService.sendMessage("push_notification_events",
+                            String.format("PUSH_SENT: userId=%s, message=%s",
+                                    request.getUserId(), request.getMessage()));
+                    return true;
+                } else {
+                    log.warn("Push notification sending returned false for user: {}", request.getUserId());
+                    return false;
+                }
+            } catch (Exception e) {
+                log.error("Failed to send push notification to user {}: {}", request.getUserId(), e.getMessage(), e);
+                kafkaProducerService.sendMessage("push_notification_events",
+                        String.format("PUSH_FAILED: userId=%s, message=%s, error=%s",
+                                request.getUserId(), request.getMessage(), e.getMessage()));
+
+                return false;
+            }
+        });
     }
-
-    private boolean sendPushNotificationAsync(NotificationRequest request) {
-        try {
-            // Firebase logic here
-            // Example Firebase call to send a push notification
-            // For example:
-            // Message message = Message.builder().setToken(request.getDeviceToken()).build();
-            // String response = FirebaseMessaging.getInstance().send(message);
-
-            log.info("Push notification sent successfully to {}",request.getMessage());
-            return true;  // Notification sent successfully
-        } catch (Exception e) {
-            log.error("Failed to send push notification to {}: {}", e.getMessage(), e);
-            return false;  // Failure
-        }
-    }
-
- */
 }

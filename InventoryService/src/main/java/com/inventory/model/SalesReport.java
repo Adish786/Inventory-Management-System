@@ -1,8 +1,13 @@
 package com.inventory.model;
 
 
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+@Data
+@NoArgsConstructor
 public class SalesReport {
     private UUID productId;
     private int totalSold;

@@ -12,8 +12,10 @@ public interface OrderService {
     Order getOrderById(UUID id);
     Order getOrderType(String name);
     String deleteOrder(UUID id);
-
     Order updateOrder(UUID orderId, int newQuantity);
+    void fulfillOrder(UUID orderId);
+    void cancelOrder(UUID orderId);
+    Order placeOrder(UUID customerId, UUID productId, int quantity);
 
 
 }

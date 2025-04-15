@@ -1,5 +1,6 @@
 package com.service.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.service.model.Payment;
@@ -108,7 +109,7 @@ public class PaymentController {
                  p.setPaymentserviceprovider(payment.getPaymentserviceprovider());
              if (payment.getQuantity() !=0)
                  p.setQuantity(payment.getQuantity());
-             if (payment.getTotalpayout() != 0)
+             if (payment.getTotalpayout() != BigDecimal.ONE)
                  p.setTotalpayout(payment.getTotalpayout());
              return new ResponseEntity<>(paymentRepo.save(p), HttpStatus.OK);
          } else

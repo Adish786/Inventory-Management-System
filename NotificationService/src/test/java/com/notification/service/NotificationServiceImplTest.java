@@ -1,7 +1,6 @@
 package com.notification.service;
 
 import static org.mockito.Mockito.*;
-
 import com.notification.model.Notification;
 import com.notification.model.NotificationRequest;
 import com.notification.repository.NotificationRepository;
@@ -16,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class NotificationServiceImplTest {
@@ -89,7 +89,7 @@ public     void sendNotification_SmsSuccess_ShouldCallSmsService() throws Except
         request.setType(NotificationType.SMS);
         request.setPhoneNumber("+1234567890");
         when(repository.save(any(Notification.class))).thenReturn(notification);
-        when(smsService.sendSms(anyString(), anyString())).thenReturn(true);
+        when(smsService.sendSms(anyString(), anyString())).thenReturn(any());
         notificationService.sendNotification(request);
         Thread.sleep(100);
         verify(smsService).sendSms("+1234567890", "Test Message");
@@ -101,7 +101,7 @@ public     void sendNotification_SmsSuccess_ShouldCallSmsService() throws Except
 public     void sendNotification_PushSuccess_ShouldCallPushService() throws Exception {
         request.setType(NotificationType.PUSH);
         when(repository.save(any(Notification.class))).thenReturn(notification);
-        when(pushService.sendPushNotification(any(NotificationRequest.class))).thenReturn(true);
+        when(pushService.sendPushNotification(any(NotificationRequest.class))).thenReturn(any());
         notificationService.sendNotification(request);
         Thread.sleep(100);
         verify(pushService).sendPushNotification(request);

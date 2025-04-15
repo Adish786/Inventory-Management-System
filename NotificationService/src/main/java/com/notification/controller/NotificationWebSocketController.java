@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.concurrent.CompletableFuture;
+
 @Controller
 @Slf4j
 public class NotificationWebSocketController {
@@ -41,8 +43,8 @@ public class NotificationWebSocketController {
               @ApiResponse(code = 400, message = "Bad Request"),
               @ApiResponse(code = 500, message = "Internal Server Error") })
     public ResponseEntity<String> sendPush(@RequestBody NotificationRequest request) {
-        boolean isSent = pushNotificationService.sendPushNotification(request);
-        return ResponseEntity.ok(isSent ? "Push Notification Sent!" : "Failed to Send");
+          CompletableFuture<Boolean> isSent = pushNotificationService.sendPushNotification(request);
+        return ResponseEntity.ok(isSent.join() ? "Push Notification Sent!" : "Failed to Send");
     }
 
 }

@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,46 +30,34 @@ public class EmailServiceImplTest {
     private final String testBody = "<html><body>Test Content</body></html>";
 
     @BeforeEach
-    void setUp() throws Exception {
+public   void setUp() throws Exception {
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
     }
 
     @Test
-    void sendEmail_ShouldReturnTrueWhenEmailSentSuccessfully() throws Exception {
-        // Act
+   public void sendEmail_ShouldReturnTrueWhenEmailSentSuccessfully() throws Exception {
         boolean result = emailService.sendEmail(testTo, testSubject, testBody);
-
-        // Assert
         assertTrue(result);
         verify(mailSender).send(mimeMessage);
     }
 
     @Test
-    void sendEmail_ShouldSetCorrectRecipientAndSubject() throws Exception {
-        // Act
+  public   void sendEmail_ShouldSetCorrectRecipientAndSubject() throws Exception {
         emailService.sendEmail(testTo, testSubject, testBody);
-
-        // Verify recipient and subject were set
         //verify(mimeMessage).setRecipients(eq(MimeMessage.RecipientType.TO), eq(testTo));
         verify(mimeMessage).setSubject(testSubject);
     }
 
     @Test
-    void sendEmail_ShouldSetHtmlContent() throws Exception {
-        // Arrange
+   public void sendEmail_ShouldSetHtmlContent() throws Exception {
         ArgumentCaptor<MimeMultipart> multipartCaptor = ArgumentCaptor.forClass(MimeMultipart.class);
-
-        // Act
         emailService.sendEmail(testTo, testSubject, testBody);
-
-        // Verify HTML content was set
         verify(mimeMessage).setContent(multipartCaptor.capture());
         assertNotNull(multipartCaptor.getValue());
     }
 
     @Test
-    void sendEmail_ShouldReturnFalseWhenMessagingExceptionOccurs() throws Exception {
-        // Arrange
+  public   void sendEmail_ShouldReturnFalseWhenMessagingExceptionOccurs() throws Exception {
       //  doThrow(new MessagingException("Test exception")).when(mailSender).send(mimeMessage);
 
         // Act
@@ -81,7 +68,7 @@ public class EmailServiceImplTest {
     }
 
     @Test
-    void sendEmail_ShouldReturnFalseForPartialNullParameters() {
+  public   void sendEmail_ShouldReturnFalseForPartialNullParameters() {
         assertAll(
                 () -> assertTrue(emailService.sendEmail("to", testSubject, testBody)),
                 () -> assertTrue(emailService.sendEmail(testTo, "subject", testBody)),
