@@ -164,7 +164,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>Notification-Service</finalName>
+		<finalName>notification-service</finalName>
 	</build>
 
 </project>

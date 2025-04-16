@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Security-Service
+  name: security-service
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: Security-Service
+      app: security-service
   template:
     metadata:
       labels:
-        app: Security-Service
+        app: security-service
     spec:
       containers:
-        - name: Security-Service
-          image: Security-Service:latest
+        - name: security-service
+          image: security-service:latest
           ports:
             - containerPort: 8088

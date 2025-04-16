@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  order-service:
+    build: ./order-service
+    ports:
+      - "8004:8004"
+    depends_on:
+      - kafka
+      - eureka
+
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "8006:8006"
+    depends_on:
+      - kafka
+      - eureka
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8003:8003"
+    depends_on:
+      - kafka
+      - eureka
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8009:8009"
+    depends_on:
+      - kafka
+      - eureka
+  product-service:
+    build: ./product-service
+    ports:
+      - "8005:8005"
+    depends_on:
+      - kafka
+      - eureka
+  security-service:
+    build: ./security-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - kafka
+      - eureka
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+
+  eureka:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8089:8089"
+    depends_on:
+      - eureka
+
+  spring-admin:
+    build: ./spring-admin-dashboard
+    ports:
+      - "9090:9090"

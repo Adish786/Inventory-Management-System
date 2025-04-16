@@ -160,7 +160,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>Order-Service</finalName>
+		<finalName>order-service</finalName>
 	</build>
 
 </project>

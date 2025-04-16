@@ -1,5 +1,5 @@
 FROM openjdk:17
-WORKDIR /Notification-Service
-COPY target/Notification-Service.jar Notification-Service.jar
-ENTRYPOINT ["java", "-jar", "Notification-Service.jar"]
+WORKDIR /notification-service
+COPY target/notification-service.jar notification-service.jar
+ENTRYPOINT ["java", "-jar", "notification-service.jar"]
 EXPOSE:8009

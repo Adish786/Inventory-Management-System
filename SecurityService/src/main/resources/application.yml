@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Inventory Service
+    name: security-service
   boot:
     admin:
       client:

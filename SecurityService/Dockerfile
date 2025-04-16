@@ -1,5 +1,5 @@
 FROM openjdk:17
-WORKDIR /Security-Service
-COPY target/Security-Service.jar Security-Service.jar
-ENTRYPOINT ["java", "-jar", "product-service.jar"]
+WORKDIR /security-service
+COPY target/security-service.jar security-service.jar
+ENTRYPOINT ["java", "-jar", "security-service.jar"]
 EXPOSE:8088

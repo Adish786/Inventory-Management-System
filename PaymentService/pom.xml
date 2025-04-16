@@ -112,7 +112,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>Payment-Service</finalName>
+		<finalName>payment-service</finalName>
 	</build>
 
 </project>
