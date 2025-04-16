@@ -2,8 +2,7 @@ package com.inventory.service;
 
 import com.inventory.event.ReportGenerationEvent;
 import com.inventory.model.SalesReport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class ReportGenerationServiceImpl implements ReportGenerationService {
-    private Logger log = LoggerFactory.getLogger(ReportGenerationServiceImpl.class);
     private final SalesReportService salesReportService;
     private final StockReportService stockReportService;
     private final KafkaTemplate<String, Object> kafkaTemplate;

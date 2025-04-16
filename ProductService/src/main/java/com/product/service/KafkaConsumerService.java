@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class KafkaConsumerService {
-    private Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
 
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 

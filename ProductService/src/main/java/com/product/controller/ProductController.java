@@ -9,8 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import com.product.service.ProductService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +17,10 @@ import com.product.model.Product;
 import com.product.repository.ProductRepository;
 
 @RestController
+@Slf4j
 public class ProductController {
-    private Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService service;
-
-
     private final ProductRepository productRepository;
-
     public ProductController(ProductService service, ProductRepository productRepository) {
         this.service = service;
         this.productRepository = productRepository;

@@ -1,7 +1,6 @@
 package com.notification.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@Slf4j
 public class SmsServiceImpl implements SmsService {
-    private Logger log = LoggerFactory.getLogger(SmsServiceImpl.class);
 
     private final KafkaProducerService kafkaProducerService;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10); // Tune per load

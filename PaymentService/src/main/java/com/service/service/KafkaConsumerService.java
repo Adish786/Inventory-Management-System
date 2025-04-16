@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.event.PaymentEvent;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 
 @Service
+@Slf4j
 public class KafkaConsumerService {
-    private Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
     private final ApplicationEventPublisher eventPublisher;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private final ObjectMapper objectMapper = new ObjectMapper();

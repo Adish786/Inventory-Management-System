@@ -5,8 +5,7 @@ import com.notification.model.NotificationRequest;
 import com.notification.repository.NotificationRepository;
 import com.notification.utils.NotificationStatus;
 import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -16,8 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class NotificationServiceImpl implements NotificationService {
-    private Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     private final EmailService emailService;
     private final SmsService smsService;

@@ -10,6 +10,7 @@ import com.service.model.OrderStatus;
 import com.service.repository.InventoryRepository;
 import jakarta.annotation.PreDestroy;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,10 +19,8 @@ import com.service.repository.OrderRepository;
 
 
 @Service
-
+@Slf4j
 public class OrderServiceImpl implements OrderService {
-    private Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
-
     private final OrderRepository orderRepository;
     private final InventoryRepository inventoryRepository;
     private final KafkaProducerService kafkaProducerService;

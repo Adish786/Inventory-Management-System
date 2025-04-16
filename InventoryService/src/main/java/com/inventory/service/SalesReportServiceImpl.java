@@ -4,6 +4,7 @@ import com.inventory.event.SalesReportGeneratedEvent;
 import com.inventory.model.Sales;
 import com.inventory.model.SalesReport;
 import com.inventory.repository.SalesRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,8 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.DoubleAdder;
 
 @Service
+@Slf4j
 public class SalesReportServiceImpl implements SalesReportService {
-    private Logger log = LoggerFactory.getLogger(SalesReportServiceImpl.class);
     private final SalesRepository salesRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final KafkaTemplate<String, Object> kafkaTemplate;

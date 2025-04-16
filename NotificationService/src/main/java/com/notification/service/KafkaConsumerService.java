@@ -1,20 +1,18 @@
 package com.notification.service;
 
 import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class KafkaConsumerService {
-    private Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
     private final ExecutorService executor = Executors.newFixedThreadPool(10);  // Thread pool for concurrency
     private final KafkaProducerService kafkaProducerService;  // Injecting Kafka producer to send messages after processing
 

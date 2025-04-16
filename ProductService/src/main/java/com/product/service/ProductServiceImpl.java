@@ -10,8 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.product.model.Category;
 import com.product.model.Price;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,8 +21,8 @@ import com.product.model.Product;
 import com.product.repository.ProductRepository;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
-    private Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository repository;
     private final ApplicationEventPublisher eventPublisher;

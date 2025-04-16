@@ -1,18 +1,16 @@
 package com.notification.service;
 
 import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class KafkaProducerService {
-    private Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final ExecutorService executor = Executors.newFixedThreadPool(10); // To handle concurrent message sending

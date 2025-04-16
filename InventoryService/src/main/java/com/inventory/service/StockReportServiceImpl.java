@@ -2,6 +2,7 @@ package com.inventory.service;
 
 import com.inventory.event.ProductStockFetchedEvent;
 import com.inventory.repository.InventoryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,8 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StockReportServiceImpl implements StockReportService {
-    private Logger log = LoggerFactory.getLogger(StockReportServiceImpl.class);
 
     private final InventoryRepository inventoryRepository;
     private final ApplicationEventPublisher eventPublisher;

@@ -2,16 +2,14 @@ package com.notification.service;
 
 import com.notification.model.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Slf4j
 public class PushNotificationServiceImpl implements PushNotificationService {
-    private Logger log = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
     private final KafkaProducerService kafkaProducerService;
 
     public PushNotificationServiceImpl(KafkaProducerService kafkaProducerService) {

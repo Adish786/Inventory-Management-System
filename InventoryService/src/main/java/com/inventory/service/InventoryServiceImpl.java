@@ -6,8 +6,7 @@ import com.inventory.model.StockQuantity;
 import com.inventory.repository.InventoryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
+@Slf4j
 public class InventoryServiceImpl implements InventoryService {
-    private Logger log = LoggerFactory.getLogger(InventoryServiceImpl.class);
 
     private final InventoryRepository inventoryRepository;
     private final RedisTemplate<String, Integer> redisTemplate;

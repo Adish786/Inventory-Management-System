@@ -1,18 +1,17 @@
 package com.notification.service;
 
 import com.notification.model.NotificationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
+@Slf4j
 public class NotificationProducer {
 
     private final KafkaTemplate<String, NotificationRequest> kafkaTemplate;
-    private static final Logger log = LoggerFactory.getLogger(NotificationProducer.class);
     private final ExecutorService executorService = Executors.newFixedThreadPool(10); // Tune pool size based on load
 
     public NotificationProducer(KafkaTemplate<String, NotificationRequest> kafkaTemplate) {

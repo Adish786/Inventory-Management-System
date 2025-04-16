@@ -3,21 +3,18 @@ package com.product.service;
 import com.product.event.KafkaMessageEvent;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class KafkaProducerService {
-    private Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final ExecutorService executor;
