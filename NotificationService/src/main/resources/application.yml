@@ -44,9 +44,17 @@ management:
     loggers:
       enabled: true
 
+#eureka server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
   #promites config
   server:
-    port: ${server.port:8004}
+    port: ${server.port:8009}
     web:
       exposure:
         include: health,info,prometheus

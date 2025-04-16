@@ -44,17 +44,25 @@ management:
     loggers:
       enabled: true
 
-  #promites config
-  server:
-    port: ${server.port:8088}
-    web:
-      exposure:
-        include: health,info,prometheus
-        prometheus:
-          enabled: true
-      metrics:
-        export:
+  #eureka server
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka
+    instance:
+      prefer-ip-address: true
+
+    #promites config
+    server:
+      port: ${server.port:8088}
+      web:
+        exposure:
+          include: health,info,prometheus
           prometheus:
             enabled: true
-      health:
-        show-details: always
+        metrics:
+          export:
+            prometheus:
+              enabled: true
+        health:
+          show-details: always
