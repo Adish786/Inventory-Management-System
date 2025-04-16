@@ -6,14 +6,14 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: SpringBootAdmin
+      app: spring-admin-dashboard
   template:
     metadata:
       labels:
-        app: SpringBootAdmin
+        app: spring-admin-dashboard
     spec:
       containers:
-        - name: SpringBootAdmin
-          image: SpringBootAdmin
+        - name: spring-admin-dashboard
+          image: spring-admin-dashboard
           ports:
             - containerPort: 9090

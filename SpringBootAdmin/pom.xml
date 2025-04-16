@@ -61,7 +61,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>SpringBootAdmin</finalName>
+		<finalName>spring-admin-dashboard</finalName>
 	</build>
 
 </project>
