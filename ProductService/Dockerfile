@@ -1,5 +1,5 @@
 FROM openjdk:17
-WORKDIR /product-service
-COPY target/product-service.jar product-service.jar
+WORKDIR /Product-Service
+COPY target/Product-Service.jar Product-Service.jar
 ENTRYPOINT ["java", "-jar", "product-service.jar"]
-EXPOSE:8091
+EXPOSE:8005

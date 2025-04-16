@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Order-Service
+  name: SpringBootAdmin
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: Order-Service
+      app: SpringBootAdmin
   template:
     metadata:
       labels:
-        app: Order-Service
+        app: SpringBootAdmin
     spec:
       containers:
-        - name: Order-Service
-          image: Order-Service:latest
+        - name: SpringBootAdmin
+          image: SpringBootAdmin
           ports:
-            - containerPort: 8004
+            - containerPort: 9090

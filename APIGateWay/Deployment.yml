@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Order-Service
+  name: api-gateway
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: Order-Service
+      app: api-gateway
   template:
     metadata:
       labels:
-        app: Order-Service
+        app: api-gateway
     spec:
       containers:
-        - name: Order-Service
-          image: Order-Service:latest
+        - name: api-gateway
+          image: api-gateway:latest
           ports:
-            - containerPort: 8004
+            - containerPort: 8089

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory-service
+  name: Inventory-Service
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: inventory-service
+      app: Inventory-Service
   template:
     metadata:
       labels:
-        app: inventory-service
+        app: Inventory-Service
     spec:
       containers:
-        - name: inventory-service
-          image: inventory-service:latest
+        - name: Inventory-Service
+          image: Inventory-Service:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8006

@@ -1,5 +1,5 @@
 FROM openjdk:17
-WORKDIR /inventory-service
-COPY target/inventory-service.jar inventory-service.jar
-ENTRYPOINT ["java", "-jar", "inventory-service.jar"]
-EXPOSE:8094
+WORKDIR /Inventory-Service
+COPY target/Inventory-Service.jar Inventory-Service.jar
+ENTRYPOINT ["java", "-jar", "Inventory-Service.jar"]
+EXPOSE:8006

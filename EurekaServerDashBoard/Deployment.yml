@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Order-Service
+  name: eureka-server
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: Order-Service
+      app: eureka-server
   template:
     metadata:
       labels:
-        app: Order-Service
+        app: eureka-server
     spec:
       containers:
-        - name: Order-Service
-          image: Order-Service:latest
+        - name: eureka-server
+          image: eureka-server:latest
           ports:
-            - containerPort: 8004
+            - containerPort: 8761

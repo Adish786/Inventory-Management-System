@@ -1,5 +1,5 @@
 FROM openjdk:17
-WORKDIR /paymentService
-COPY target/paymentService.jar paymentService.jar
+WORKDIR /Payment-Service
+COPY target/Payment-Service.jar Payment-Service.jar
 ENTRYPOINT ["java", "-jar", "paymentService.jar"]
-EXPOSE:8092
+EXPOSE:8003
